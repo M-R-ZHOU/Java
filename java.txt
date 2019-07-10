@@ -1,0 +1,9 @@
+逻辑操作符
+java中逻辑操作符 “短路与”（&&）“短路或”（||）“非”（!）
+对于Java逻辑操作来说，不同于C、C++、Python，不可以将非布尔值当作布尔值在逻辑表达式中使用
+python3 中的逻辑操作符为 and or not &（代表按位与运算）|（代表按位或运算）
+and: x and y 布尔与 如果x为False 或者是0 返回False或者0 (也就是说如果x非真就返回x)，否则返回y
+or:  x or y 如果 x是非0 则返回x 否则返回y
+not: 如果 x 为 True，返回 False 。如果 x 为 False，它返回 True
+
+
