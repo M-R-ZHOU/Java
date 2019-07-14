@@ -18,3 +18,240 @@ java中增加了一种无符号右移操作符(>>>)，无论正负，都在高�
 
 JAVA 多线程
 
+线程和线程间共享堆内存和方法区内存，栈内存是独立的，一个线程一个栈
+java中实现线程的第一种方式：
+public class ThreadTest {
+
+	public static void main(String[] args) {
+		Thread t = new Processor();
+		t.start();
+
+		for(int i = 0; i<10; i++) {
+			System.out.println("main-->" + i);
+		}
+
+	}
+}
+class Processor extends Thread{
+	public void run() {
+		for(int i = 0; i<100;i++) {
+			System.out.println("run-->" + i);
+		}
+	}
+}
+
+java实现多线程的第二种方法，实现runnable接口
+
+public class ThreadTest2 {
+
+	public static void main(String[] args) {
+		Thread t = new Thread(new Processor2());
+		t.start();
+		for(int i = 0; i<10;i++) {
+			System.out.println("main-->" + i);
+		}
+
+
+	}
+
+}
+
+class Processor2 implements Runnable{
+	@Override
+	public void run() {
+		for(int i = 0; i<100;i++) {
+			System.out.println("run-->" + i);
+		}
+	}
+}
+
+线程的生命周期：新建状态 就绪状态 运行状态 阻塞状态 消亡
+新建：采用new语句创建完成
+就绪：执行start方法后，就绪状态线程表示有权利去获取CPU的时间片，CPU的时间片是执行权，
+当线程拿到CPU的时间片之后马上执行run方法，这个时候就代表进入了运行状态。就绪与运行状态的频繁切换是通过JVM的调度
+运行状态：执行run方法
+阻塞：执行了wait语句、执行了sleep语句和等待某个对象锁
+消亡就是当run方法执行结束
+
+线程优先级分为三种：
+MAX_PRIORITY--10 MIN_PRIORITY--1 NORM_PRIORITY--5(默认的)
+获取优先级的方法是getPriority 设置优先级的方法是setPriority 设置优先级必须在启动前，线程启动后便无法再次设置优先级
+
+多线程静态方法sleep Thread.sleep(毫秒) ，作用是阻塞当前的线程
+public class ThreadTest4 {
+	public static void main(String[] args) throws InterruptedException {
+		Thread t1 = new Thread(new Processor5());
+		t1.setName("t1");
+		t1.start();
+		for(int i = 0;i<10;i++) {
+			System.out.println(Thread.currentThread().getName() + "--->" + i);
+			Thread.sleep(500);
+		}
+	}
+}
+class Processor5 implements Runnable{
+	//Thread 中的 run 方法不抛出异常，所以重写的run的方法不可以在声明位置抛出异常
+	public void run(){
+		for(int i = 0; i<10; i++) {
+			System.out.println(Thread.currentThread().getName() + "--->" + i);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
+##打断通过sleep方法实现的休眠，依靠异常处理机制##
+public class ThreadTest5 {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		Thread t = new Thread(new Processor6());
+		t.setName("t");
+		t.start();
+		Thread.sleep(5000);
+		t.interrupt();
+	}
+
+}
+
+class Processor6 implements Runnable{
+	public void run() {
+		try {
+			Thread.sleep(1000000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		for(int i =0;i<10;i++) {
+			System.out.println(Thread.currentThread().getName() + "----->" + i);
+		}
+	}
+}
+
+Thread.yield();方法是一个静态方法，给同一个优先级的线程让位，但是让位的时间不固定
+
+t.join()成员方法 合并线程
+t1 t2
+异步编程模型：t1线程与t2线程之间谁也不等待谁
+同步编程模型：t1线程必须等待t2线程执行结束之后才可以执行
+
+线程同步机制synchronized，为了数据的安全，这样做会降低程序的使用率，此时程序的运行效果等同于单线程
+使用线程同步的条件：必须是多线程环境，共享同一个数据，共享的数据涉及到修改的操作
+synchronized 添加到静态方法上，线程执行此方法的时候就会去找类锁，类锁只有一个，不关心对象是否是同一个，
+添加到成员方法上时，去找对象锁，对象锁可以有多个，需要针对同一个对象
+
+*******************************************************************************************
+Java 死锁代码
+public class ThreadTest7 {
+
+	public static void main(String[] args) {
+		Object o1 = new Object();
+		Object o2 = new Object();
+		Thread t1 = new Thread(new T1(o1, o2));
+		Thread t2 = new Thread(new T2(o1, o2));
+		t1.start();
+		t2.start();
+	}
+
+}
+class T1 implements Runnable{
+	Object o1;
+	Object o2;
+
+	public T1(Object o1, Object o2) {
+		super();
+		this.o1 = o1;
+		this.o2 = o2;
+	}
+	public void run() {
+		synchronized (o1) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			synchronized (o2) {
+
+			}
+
+		}
+
+	}
+}
+
+class T2 implements Runnable{
+	Object o1;
+	Object o2;
+
+	public T2(Object o1, Object o2) {
+		super();
+		this.o1 = o1;
+		this.o2 = o2;
+	}
+	public void run() {
+		synchronized (o2) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			synchronized (o1) {
+
+			}
+		}
+	}
+}
+************************************************************************************************************
+python 死锁
+
+import threading
+import time
+
+lock_apple = threading.Lock()
+lock_banana = threading.Lock()
+
+class MyThread_1(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.fun()
+
+    def fun(self):
+        lock_apple.acquire()  # 如果锁被占用,则阻塞在这里,等待锁的释放
+        print ("线程 %s , 想拿: %s--%s" %(self.name, "苹果",time.ctime()))
+        time.sleep(2)
+        lock_banana.acquire()
+        print ("线程 %s , 想拿: %s--%s" %(self.name, "香蕉",time.ctime()))
+        lock_banana.release()
+        lock_apple.release()
+
+class MyThread_2(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.fun()
+
+    def fun(self):
+        lock_banana.acquire()
+        print ("线程 %s , 想拿: %s--%s" %(self.name, "香蕉",time.ctime()))
+        time.sleep(2)
+        lock_apple.acquire()
+        print ("线程 %s , 想拿: %s--%s" %(self.name, "苹果",time.ctime()))
+        lock_apple.release()
+        lock_banana.release()
+
+if __name__ == "__main__":
+    thread_1 = MyThread_1()
+    thread_2 = MyThread_2()
+    thread_1.start()
+    thread_2.start()
