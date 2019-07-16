@@ -255,3 +255,10 @@ if __name__ == "__main__":
     thread_2 = MyThread_2()
     thread_1.start()
     thread_2.start()
+
+***********************************************************************************************************************
+ArrayList：ArrayList的底层使用数组实现的，可以认为其实一个大小可变的数组
+LinkedList：通过双向链表实现
+Vector： Vector和ArrayList一样，都是通过数组实现的，但是Vector是线程安全的。
+和ArrayList相比，其中的很多方法都通过同步（synchronized）处理来保证线程安全。
+
