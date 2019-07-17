@@ -121,3 +121,66 @@ public class TestMyList {
 
 }
 *********************************************************************
+MyStack
+package cn.china.packages.pck8;
+
+import java.util.Arrays;
+
+public class MyStack {
+	private int[] stack;
+	public MyStack() {
+		stack = new int[0];
+	}
+
+	public void push(int element) {
+		int[] tempStack = new int[stack.length + 1];
+		for(int i=0;i<stack.length;i++) {
+			tempStack[i] = stack[i];
+		}
+		tempStack[stack.length] = element;
+		stack = tempStack;
+	}
+
+	public int pop() {
+		if(stack.length <=0) {
+			throw new RuntimeException("the Stack is empty");
+		}
+		int item = stack[stack.length-1];
+		int[] tempStack = new int[stack.length - 1];
+		for(int i=0;i<tempStack.length;i++) {
+			tempStack[i] = stack[i];
+		}
+		stack = tempStack;
+		return item;
+	}
+	public int peek() {
+		return stack[stack.length - 1];
+	}
+	public void printStack() {
+		System.out.println(Arrays.toString(stack));
+	}
+
+	public boolean isEmpty() {
+		return stack.length == 0;
+	}
+
+}
+
+
+package cn.china.packages.pck8;
+
+public class TestMyStack {
+	public static void main(String[] args) {
+		MyStack stack = new MyStack();
+		stack.push(1);
+		stack.push(3);
+		stack.push(5);
+		stack.printStack();
+		System.out.println(stack.peek());
+		stack.pop();
+		stack.printStack();
+		System.out.println(stack.peek());
+		System.out.println(stack.isEmpty());
+
+	}
+}
