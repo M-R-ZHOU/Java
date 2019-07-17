@@ -1,1 +1,123 @@
 ********************************************
+面向对象的数组
+import java.util.Arrays;
+
+public class MyList{
+	private int[] list;
+	public MyList() {
+		list = new int[0];
+	}
+
+
+	public void getSize() {
+		System.out.println("该列表目前的长度为" + list.length);
+	}
+	public void add(int element) {
+		int[] tempList = new int[list.length + 1];
+		for (int i = 0; i<list.length; i++) {
+			tempList[i] = list[i];
+		}
+		tempList[list.length] = element;
+		list = tempList;
+	}
+
+	public void del(int index) {
+		int[] tempList = new int[list.length-1];
+		if (index<0 || index>list.length-1) {
+			throw new RuntimeException("下标越界");
+		}
+		else {
+			for (int i = 0; i < tempList.length; i++) {
+				if (i<index) {
+					tempList[i] = list[i];
+				}
+				else {
+					tempList[i] = list[i+1];
+				}
+			}
+
+		}
+
+		list = tempList;
+	}
+
+	public void printList() {
+		System.out.println(Arrays.toString(list));
+	}
+
+	public void get(int index) {
+		System.out.println("索引" + index + "处的元素是" + list[index]);
+	}
+
+	public  void insert(int index, int element) {
+		int [] tempList = new int[list.length+1];
+		for(int i=0;i<list.length;i++) {
+			if(i<index) {
+				tempList[i] = list[i];
+			}
+			else {
+				tempList[i+1] = list[i];
+			}
+		}
+		tempList[index] = element;
+		list = tempList;
+	}
+
+	public int binarySearch(int target) {
+		int start = 0;
+		int end = list.length-1;
+		while (start <= end) {
+			int mid = (start + end)/2;
+			if(list[mid] == target) {
+				return mid;
+			}
+			else if (list[mid] < target) {
+				start = mid +1;
+			}
+			else {
+				end = mid -1;
+			}
+
+		}
+		return -1;
+
+	}
+}
+
+package cn.china.packages.pck8;
+
+
+public class TestMyList {
+
+	public static void main(String[] args) {
+		MyList list = new MyList();
+		list.add(1);
+		list.add(4);
+		list.add(7);
+		list.add(9);
+		list.add(13);
+		list.add(14);
+		list.add(16);
+		/*
+		list.add(80);
+		list.add(90);
+		list.add(100);
+		list.add(110);
+		list.add(120);
+		list.getSize();
+		list.printList();
+		list.del(0);
+		list.del(10);
+		list.printList();
+		list.get(2);
+		list.printList();
+		list.insert(2, 521);
+		list.printList();
+		*/
+		int index = list.binarySearch(7);
+		list.printList();
+		System.out.println(index);
+	}
+
+}
+*********************************************************************
