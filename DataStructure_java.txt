@@ -184,3 +184,102 @@ public class TestMyStack {
 
 	}
 }
+*********************************************************************************************************
+单向链表的java实现
+package cn.china.packages.pck8;
+
+public class MyLinkedList {
+	Node node;
+	//头结点
+	public MyLinkedList(int data) {
+		// TODO Auto-generated constructor stub
+		node = new Node(data);
+	}
+	static class Node{
+		int data;
+		Node nextNode;
+		Node(){
+
+		}
+		Node(int data){
+			this.data = data;
+
+		}
+	}
+	public MyLinkedList add(int data) {
+		Node newNode = new Node(data);
+		Node curreNode = node;
+		while (curreNode.nextNode != null) {
+			curreNode = curreNode.nextNode;
+		}
+		curreNode.nextNode = newNode;
+		return this;
+
+	}
+	public int getLength() {
+		int i = 1;
+		Node currentNode  = node;
+		while(currentNode.nextNode != null) {
+			currentNode = currentNode.nextNode;
+			i++;
+		}
+		return i ;
+	}
+
+	public void printLinkedList() {
+		Node currentNode = node;
+		while(currentNode.nextNode != null) {
+			System.out.print(currentNode.data + ",");
+			currentNode = currentNode.nextNode;
+		}
+		System.out.print(currentNode.data);
+		System.out.println();
+	}
+
+	public void remove(int index) {
+		Node currNode = node;
+		int k = 0;
+		if(index ==0) {
+			node = node.nextNode;
+		}
+		else if(index>0 && index<this.getLength()-1){
+			while (k<index-1) {
+				currNode = currNode.nextNode;
+				k++;
+			}
+			currNode.nextNode = currNode.nextNode.nextNode;
+		}
+		else {
+			System.out.println("索引越界");
+		}
+	}
+
+	public void insert(int data,int index) {
+		Node newNode = new Node(data);
+		Node preNode = node;
+		Node nextPreNode;
+		int k=0;
+		while (k<index - 1) {
+			preNode = preNode.nextNode;
+			k++;
+		}
+		nextPreNode = preNode.nextNode;
+		preNode.nextNode = newNode;
+		newNode.nextNode = nextPreNode;
+	}
+}
+
+public class TestMyLinkedList {
+	public static void main(String[] args) {
+		MyLinkedList linkedList = new MyLinkedList(0);
+		linkedList.add(10).add(20).add(30).add(40);
+		linkedList.add(50).add(60).add(70);
+		System.out.println(linkedList.getLength());
+		linkedList.insert(10000, 6);
+		linkedList.printLinkedList();
+		linkedList.remove(0);
+		linkedList.printLinkedList();
+		linkedList.remove(4);
+		linkedList.printLinkedList();
+	}
+}
